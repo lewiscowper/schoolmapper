@@ -3,7 +3,7 @@
 <head>
   <meta charset='utf-8'> 
   <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.1.0/pure-min.css">
-  <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+  <script src="http://maps.google.com/maps/api/js?sensor=false&libraries=places"></script>
   <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
   <title>School Mapper</title>
   <style type="text/css">
@@ -41,18 +41,24 @@
     
     // Schools
     LAYERS.push(function() {
-      var ourLayer= null;
+      var ourLayer= null;            
       
       return {
     	label: "Schools",
     	show: function(map) {
 		ourLayer = new google.maps.FusionTablesLayer({
+		  clickable: true,
+		  suppressInfoWindows: true,
 		  query: {
 			select: 'PCODE',
 			from: '1ewb041RP_gOwqC5tazqe1sr6pxmphVo7fR_mokU'
 		  },
 		});
 		ourLayer.setMap(map);        
+		
+		google.maps.event.addListener(ourLayer, 'click', function(event) {
+		    Anemities.showMarker(map, event.row.SCHNAME.value, event.latLng.lat(), event.latLng.lng());		    
+		  });
 
     	},
     	hide: function() {
@@ -121,6 +127,224 @@
     	};
     }());        
     
+    // Drug Misuse
+    LAYERS.push(function() {
+      var ourLayer= null;
+      
+      return {
+    	label: "Drug Misuse",
+    	show: function(map) {
+		ourLayer = new google.maps.FusionTablesLayer({
+		  query: {
+			select: 'geometry',
+			from: '1Rrw2pd193DOPWnlqoxb2BkGpPFnulLC9mgY79_A'
+		  },
+		});
+		ourLayer.setMap(map);        
+
+    	},
+    	hide: function() {
+  	    	ourLayer.setMap(null);
+  	    	ourLayer = null;
+    	}
+    	};
+    }());    
+    
+    // Election Turnround
+    LAYERS.push(function() {
+      var ourLayer= null;
+      
+      return {
+    	label: "Election Turnround",
+    	show: function(map) {
+		ourLayer = new google.maps.FusionTablesLayer({
+		  query: {
+			select: 'Location Polygon',
+			from: '1C6wwkVW9tRQJ5r3Aq-UoTW960cA957XgZ0u03s4'
+		  },
+		});
+		ourLayer.setMap(map);        
+
+    	},
+    	hide: function() {
+  	    	ourLayer.setMap(null);
+  	    	ourLayer = null;
+    	}
+    	};
+    }());    
+    
+    // Health deprivation
+    LAYERS.push(function() {
+      var ourLayer= null;
+      
+      return {
+    	label: "Health deprivation",
+    	show: function(map) {
+		ourLayer = new google.maps.FusionTablesLayer({
+		  query: {
+			select: 'geometry',
+			from: '1RyjGs9ZTduFYFXWpZ9uZBpITsk-GuRvoSaipJ7I'
+		  }/*,
+		  styles: [{
+			  polygonOptions: {
+				fillOpacity: 0.3
+			  }
+			}, {
+			  where: '"LIVING ENVIRONMENT SCORE" > 50',
+			  polygonOptions: {
+				fillColor: '#00FF00'
+			  }
+			}, {
+			  where: '"LIVING ENVIRONMENT SCORE" <= 50',
+			  polygonOptions: {
+				fillColor: '#FF0000'
+			  }
+			}]*/
+		});
+		ourLayer.setMap(map);        
+
+    	},
+    	hide: function() {
+  	    	ourLayer.setMap(null);
+  	    	ourLayer = null;
+    	}
+    	};
+    }());        
+    
+    // Percentage of Fuel poor
+    LAYERS.push(function() {
+      var ourLayer= null;
+      
+      return {
+    	label: "Percentage of Fuel poor",
+    	show: function(map) {
+		ourLayer = new google.maps.FusionTablesLayer({
+		  query: {
+			select: 'geometry',
+			from: '1RyjGs9ZTduFYFXWpZ9uZBpITsk-GuRvoSaipJ7I'
+		  },
+		  styles: [{
+			  polygonOptions: {
+				fillOpacity: 0.3,
+				fillColor: '#FFFFFF'
+			  }
+			}, {
+			  where: '"% of households fuel poor" > 25',
+			  polygonOptions: {
+				fillColor: '#FF0000'
+			  }
+			}, {
+			  where: '"% of households fuel poor" <= 25 && "% of households fuel poor" > 15',
+			  polygonOptions: {
+				fillColor: '#FF3030'
+			  }
+			}, {
+			  where: '"% of households fuel poor" <= 15 && "% of households fuel poor" > 7',
+			  polygonOptions: {
+				fillColor: '#FF6060'
+			  }
+			}, {
+			  where: '"% of households fuel poor" <= 7 && "% of households fuel poor" > 4',
+			  polygonOptions: {
+				fillColor: '#FF9090'
+			  }
+			}]
+		});
+		ourLayer.setMap(map);        
+
+    	},
+    	hide: function() {
+  	    	ourLayer.setMap(null);
+  	    	ourLayer = null;
+    	}
+    	};
+    }());        
+    
+/////////////////////////////////////
+      var Anemities = {
+        markers: [],
+        
+        showMarker: function(map, name, lat, lng) {
+        
+          for (var i=0; i<Anemities.markers.length; i++) {
+				// Iterates over numeric indexes from 0 to 5, as everyone expects.
+				Anemities.markers[i].setMap(null);
+			}
+			
+			Anemities.markers = [];
+        
+          var postcode = {
+            name: name,
+            location: {
+              lat: lat,
+              lng: lng
+            }            
+          };
+          // Add marker for school
+          var marker = new google.maps.Marker({
+            map: map,
+            title: postcode.name,
+            position: postcode.location,
+            });
+           Anemities.markers.push(marker); 
+            
+          // Anemities.markers.push(marker);
+          
+          // Requests for nearest amenities
+          var public_transport = {
+            location: new google.maps.LatLng(postcode.location.lat, postcode.location.lng),
+            types: ['train_station','bus_station','transit_station'],
+            rankBy: google.maps.places.RankBy.DISTANCE,
+            };
+          var mosque = {
+            location: new google.maps.LatLng(postcode.location.lat, postcode.location.lng),
+            types: ['mosque'],
+            rankBy: google.maps.places.RankBy.DISTANCE,
+            };
+          var church = {
+            location: new google.maps.LatLng(postcode.location.lat, postcode.location.lng),
+            types: ['church'],
+            rankBy: google.maps.places.RankBy.DISTANCE,
+            };
+
+var service = new google.maps.places.PlacesService(map);
+service.search(public_transport, function(results, status) {
+	if (status == google.maps.places.PlacesServiceStatus.OK) {
+          var marker = new google.maps.Marker({
+            map: map,
+            title: "Nearest public transport to " + postcode.name,
+            position: results[0].geometry.location,
+            icon: "bus.png",
+            });
+            Anemities.markers.push(marker);
+	}
+});
+service.search(mosque, function(results, status) {
+	if (status == google.maps.places.PlacesServiceStatus.OK) {
+          var marker = new google.maps.Marker({
+            map: map,
+            title: "Nearest mosque to " + postcode.name,
+            position: results[0].geometry.location,
+            icon: "mosque.png",
+            });
+            Anemities.markers.push(marker);
+	}
+});
+service.search(church, function(results, status) {
+	if (status == google.maps.places.PlacesServiceStatus.OK) {
+          var marker = new google.maps.Marker({
+            map: map,
+            title: "Nearest church to " + postcode.name,
+            position: results[0].geometry.location,
+            icon: "church.png",
+            });
+            Anemities.markers.push(marker);
+	}
+});
+        
+        }
+      };
+/////////////////////////////////////    
     
     
     var mapApp = angular.module('mapComponentsApp', []);
