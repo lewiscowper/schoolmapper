@@ -30,9 +30,64 @@
   <div id="view_tab" ng-controller="theController">       
     Lat: {{center.lat}}</br>
     Lng: {{center.lng}}</br>
+    
+    <ul>
+      <li ng-repeat="layer in layers"><input type="checkbox" ng-model="layer.visible" ng-click="toggleLayer(layer)"/> {{layer.label}}</li>
+    <ul>
   </div>
 
   <script type="text/javascript">
+    var LAYERS = [];
+    
+    // Schools
+    LAYERS.push(function() {
+      var ourLayer= null;
+      
+      return {
+    	label: "Schools",
+    	show: function(map) {
+		ourLayer = new google.maps.FusionTablesLayer({
+		  query: {
+			select: 'PCODE',
+			from: '1ewb041RP_gOwqC5tazqe1sr6pxmphVo7fR_mokU'
+		  },
+		});
+		ourLayer.setMap(map);        
+
+    	},
+    	hide: function() {
+  	    	ourLayer.setMap(null);
+  	    	ourLayer = null;
+    	}
+    	};
+    }());
+    
+    // Wards
+    LAYERS.push(function() {
+      var ourLayer= null;
+      
+      return {
+    	label: "Wards",
+    	show: function(map) {
+		ourLayer = new google.maps.FusionTablesLayer({
+		  query: {
+			select: 'Location Polygon',
+			from: '1C6wwkVW9tRQJ5r3Aq-UoTW960cA957XgZ0u03s4'
+		  },
+		});
+		ourLayer.setMap(map);        
+
+    	},
+    	hide: function() {
+  	    	ourLayer.setMap(null);
+  	    	ourLayer = null;
+    	}
+    	};
+    }());
+    
+    
+    
+    
     var mapApp = angular.module('mapComponentsApp', []);
 
     mapApp.directive('helloMaps', function (mapService) {
@@ -65,23 +120,7 @@
         };
 
         map = new google.maps.Map(elem[0], mapOptions);
-        mapService.setMap(map);
-        
-		var school_layer = new google.maps.FusionTablesLayer({
-		  query: {
-			select: 'PCODE',
-			from: '1ewb041RP_gOwqC5tazqe1sr6pxmphVo7fR_mokU'
-		  },
-		});
-		school_layer.setMap(map);        
-		
-		var wards_layer = new google.maps.FusionTablesLayer({
-		  query: {
-			select: 'Location Polygon',
-			from: '1C6wwkVW9tRQJ5r3Aq-UoTW960cA957XgZ0u03s4'
-		  },
-		});
-		wards_layer.setMap(map);        		
+        mapService.setMap(map);   		
       };
     });    
     
@@ -107,6 +146,8 @@
     });    
     
     mapApp.controller('theController', function($scope, mapService) {
+        $scope.layers = LAYERS;
+        
     	$scope.center =  {
     	  lat: mapService.getLatLng().lat,
     	  lng: mapService.getLatLng().lng
@@ -125,6 +166,14 @@
 			$scope.setCenter();
     	  });    	
     	});    
+    	
+    	$scope.toggleLayer = function(layer) {
+    	  if(!layer.visible) {
+    	    layer.hide();
+    	  } else {
+    	    layer.show(mapService.getMap());
+    	  }
+    	}
     });
   </script>
 </body>
