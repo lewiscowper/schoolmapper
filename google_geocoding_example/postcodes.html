@@ -28,6 +28,7 @@ html, body {
           var postcode = postcodes[i];
           var marker = new google.maps.Marker({
             map: map,
+            title: postcode.name,
             position: postcode.location,
             });
           markers.push(marker);
