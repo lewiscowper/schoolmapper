@@ -57,6 +57,8 @@
 		  styles: [{
 		      markerOptions: {
 		        iconName: 'grn_blank' 
+//		        iconName: 'https://dl.dropboxusercontent.com/u/95554914/hack_the_city/icons/aggregator.png' 		        
+		        
 		      }
 			}]
 		});
@@ -240,17 +242,17 @@
 				fillColor: '#FF0000'
 			  }
 			}, {
-			  where: '"% of households fuel poor" <= 25 && "% of households fuel poor" > 15',
+			  where: '"% of households fuel poor" <= 25 AND "% of households fuel poor" > 15',
 			  polygonOptions: {
 				fillColor: '#FF3030'
 			  }
 			}, {
-			  where: '"% of households fuel poor" <= 15 && "% of households fuel poor" > 7',
+			  where: '"% of households fuel poor" <= 15 AND "% of households fuel poor" > 7',
 			  polygonOptions: {
 				fillColor: '#FF6060'
 			  }
 			}, {
-			  where: '"% of households fuel poor" <= 7 && "% of households fuel poor" > 4',
+			  where: '"% of households fuel poor" <= 7 AND "% of households fuel poor" > 4',
 			  polygonOptions: {
 				fillColor: '#FF9090'
 			  }
@@ -276,8 +278,10 @@
     	show: function(map) {
 		ourLayer = new google.maps.FusionTablesLayer({		  
 		  query: {
-			select: 'longitude',
-			from: '1FCIqgwgxL_LWIqZCxNSR_7_OeUmMbsL49Nbvl_Y'
+//			select: 'longitude',
+//			from: '1FCIqgwgxL_LWIqZCxNSR_7_OeUmMbsL49Nbvl_Y'  // Gavin
+			select: 'lat',
+			from: '12gx1pufE7zY0ulTQWBhea1_NaHBTyO_TbZhXTmA' // mine
 		  },
 		  styles: [{
 		      markerOptions: {
