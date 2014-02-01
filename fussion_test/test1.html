@@ -67,13 +67,21 @@
         map = new google.maps.Map(elem[0], mapOptions);
         mapService.setMap(map);
         
-		var layer = new google.maps.FusionTablesLayer({
+		var school_layer = new google.maps.FusionTablesLayer({
 		  query: {
 			select: 'PCODE',
 			from: '1ewb041RP_gOwqC5tazqe1sr6pxmphVo7fR_mokU'
 		  },
 		});
-		layer.setMap(map);        
+		school_layer.setMap(map);        
+		
+		var wards_layer = new google.maps.FusionTablesLayer({
+		  query: {
+			select: 'Location Polygon',
+			from: '1C6wwkVW9tRQJ5r3Aq-UoTW960cA957XgZ0u03s4'
+		  },
+		});
+		wards_layer.setMap(map);        		
       };
     });    
     
