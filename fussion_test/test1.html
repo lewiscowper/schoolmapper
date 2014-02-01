@@ -51,8 +51,14 @@
 		  suppressInfoWindows: true,
 		  query: {
 			select: 'PCODE',
-			from: '1ewb041RP_gOwqC5tazqe1sr6pxmphVo7fR_mokU'
+			from: '1ewb041RP_gOwqC5tazqe1sr6pxmphVo7fR_mokU' // Sheffield
+//			from: '1lBh7l7zws0PEeF7uYnUoDJMWH9H6tRckAzgHFeA' // England						
 		  },
+		  styles: [{
+		      markerOptions: {
+		        iconName: 'grn_blank' 
+		      }
+			}]
 		});
 		ourLayer.setMap(map);        
 		
@@ -259,6 +265,35 @@
     	}
     	};
     }());        
+    
+    // 12gx1pufE7zY0ulTQWBhea1_NaHBTyO_TbZhXTmA
+    // Zoopla houses
+    LAYERS.push(function() {
+      var ourLayer= null;
+      
+      return {
+    	label: "Zoopla houses",
+    	show: function(map) {
+		ourLayer = new google.maps.FusionTablesLayer({		  
+		  query: {
+			select: 'longitude',
+			from: '1FCIqgwgxL_LWIqZCxNSR_7_OeUmMbsL49Nbvl_Y'
+		  },
+		  styles: [{
+		      markerOptions: {
+		        iconName: 'homegardenbusiness' 
+		      }
+			}]
+		});
+		ourLayer.setMap(map);        
+
+    	},
+    	hide: function() {
+  	    	ourLayer.setMap(null);
+  	    	ourLayer = null;
+    	}
+    	};
+    }());      
     
 /////////////////////////////////////
       var Anemities = {
