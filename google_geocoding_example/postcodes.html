@@ -12,32 +12,74 @@ html, body {
   height: 100%;
 }
     </style>
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBPiZs6448XWeGOA5uEJLE1norDw8UfV_A&sensor=false"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyANFlB9MEC9t6M3K_9_IWnnGjAXpHsttTg&sensor=false"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=places&sensor=false"></script>
     <script type="text/javascript" src="postcodes.js"></script>
     <script type="text/javascript">
       var map;
-      var markers = [];
       function addSchoolMarkers() {
-        // Clear existing markers
-        for (var i = 0; i < markers.length; i++ ) {
-          markers[i].setMap(null);
-        }
-        markers = [];
-        // Add new markers
-        for (var i = 0; i < postcodes.length; i++ ) {
+        for (var i = 0; i < 1; i++ ) {
           var postcode = postcodes[i];
+          // Add marker for school
           var marker = new google.maps.Marker({
             map: map,
             title: postcode.name,
             position: postcode.location,
             });
-          markers.push(marker);
+          // Requests for nearest amenities
+          var public_transport = {
+            location: new google.maps.LatLng(postcode.location.lat, postcode.location.lng),
+            types: ['train_station','bus_station','transit_station'],
+            rankBy: google.maps.places.RankBy.DISTANCE,
+            };
+          var mosque = {
+            location: new google.maps.LatLng(postcode.location.lat, postcode.location.lng),
+            types: ['mosque'],
+            rankBy: google.maps.places.RankBy.DISTANCE,
+            };
+          var church = {
+            location: new google.maps.LatLng(postcode.location.lat, postcode.location.lng),
+            types: ['church'],
+            rankBy: google.maps.places.RankBy.DISTANCE,
+            };
+
+var service = new google.maps.places.PlacesService(map);
+service.search(public_transport, function(results, status) {
+	if (status == google.maps.places.PlacesServiceStatus.OK) {
+          var marker = new google.maps.Marker({
+            map: map,
+            title: "Nearest public transport to " + postcode.name,
+            position: results[0].geometry.location,
+            icon: "bus.png",
+            });
+	}
+});
+service.search(mosque, function(results, status) {
+	if (status == google.maps.places.PlacesServiceStatus.OK) {
+          var marker = new google.maps.Marker({
+            map: map,
+            title: "Nearest mosque to " + postcode.name,
+            position: results[0].geometry.location,
+            icon: "mosque.png",
+            });
+	}
+});
+service.search(church, function(results, status) {
+	if (status == google.maps.places.PlacesServiceStatus.OK) {
+          var marker = new google.maps.Marker({
+            map: map,
+            title: "Nearest church to " + postcode.name,
+            position: results[0].geometry.location,
+            icon: "church.png",
+            });
+	}
+});
         }
       }
       function initialize() {
         var mapOptions = {
           center: new google.maps.LatLng(53.4,-1.7),
-          zoom: 10,
+          zoom: 12,
           mapTypeId: google.maps.MapTypeId.ROADMAP,
           panControl: true,
           zoomControl: true,
