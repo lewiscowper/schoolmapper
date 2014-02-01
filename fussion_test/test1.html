@@ -85,6 +85,41 @@
     	};
     }());
     
+    // Cycling
+    LAYERS.push(function() {
+      var ourLayer= null;
+      
+      return {
+    	label: "Cycling",
+    	show: function(map) {
+		ourLayer = new google.maps.BicyclingLayer();
+		ourLayer.setMap(map);        
+
+    	},
+    	hide: function() {
+  	    	ourLayer.setMap(null);
+  	    	ourLayer = null;
+    	}
+    	};
+    }());    
+
+    // Public Transport
+    LAYERS.push(function() {
+      var ourLayer= null;
+      
+      return {
+    	label: "Public Transport",
+    	show: function(map) {
+		ourLayer = new google.maps.TransitLayer();
+		ourLayer.setMap(map);        
+
+    	},
+    	hide: function() {
+  	    	ourLayer.setMap(null);
+  	    	ourLayer = null;
+    	}
+    	};
+    }());        
     
     
     
