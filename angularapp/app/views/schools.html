@@ -1,0 +1,10 @@
+<h1>Listing all schools in Sheffield</h1>
+
+
+<div>
+	Search: <input ng-model="schoolsFilter">
+	<span>Showing {{filteredSchools.length}} schools</span>
+</div>
+<div class="blockList">
+		<a ng-href="#/school/{{school[0]}}" ng-repeat="school in filteredSchools = (fusionSchools.rows | filter:schoolsFilter | orderBy )" class="blockList__item">{{school[1]}}</a>
+</div>
